@@ -583,7 +583,7 @@ function renderWorkflows() {
   const flows = portalMeta.workflows || [];
   return `
     <h1 class="page-title">Integration flows</h1>
-    <p class="page-lead">End-to-end sequences — similar to Delhivery B2B flow charts and Shiprocket's ordered onboarding.</p>
+    <p class="page-lead">End-to-end sequences.</p>
     ${flows
       .map(
         (f) => `
