@@ -1,0 +1,14 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: shipmozo-developer-portal
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build:spec
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0

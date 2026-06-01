@@ -1,0 +1,213 @@
+{
+  "info": {
+    "title": "Shipmozo Shipping API",
+    "description": "REST API for order fulfillment, courier assignment, tracking, warehouses, NDR, and labels. All responses use `result` (`1` = success, `0` = failure), `message`, and `data`.\n\n**Base URL:** `https://shipping-api.com/app/api/v1` — do not add a trailing slash.\n\n**Auth:** Send `public-key` and `private-key` headers on every protected route, or obtain keys via `POST /login`.\n\n**Rate limits:** Shipmozo returns `x-ratelimit-limit` (500) and `x-ratelimit-remaining` on each response. Quota is **500 requests per 1-minute window** per API key; `remaining` drops with each call and **refreshes when the minute rolls over**.\n\n**Support:** munish@apporio.in",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Shipmozo API Support",
+      "email": "munish@apporio.in"
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyPublic": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "public-key",
+        "description": "API public key from panel profile or POST /login"
+      },
+      "ApiKeyPrivate": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "private-key",
+        "description": "API private key — keep server-side only"
+      }
+    },
+    "schemas": {
+      "ShipmozoResponse": {
+        "type": "object",
+        "properties": {
+          "result": { "type": "string", "enum": ["0", "1"], "description": "1 = success, 0 = failure" },
+          "message": { "type": "string" },
+          "data": { "type": "object" }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": ["username", "password"],
+        "properties": {
+          "username": { "type": "string", "description": "Panel username (email or phone)" },
+          "password": { "type": "string", "format": "password" }
+        }
+      }
+    },
+    "responses": {
+      "ShipmozoUnauthorized": {
+        "description": "Invalid or missing API keys",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/ShipmozoResponse" },
+            "example": { "result": "0", "message": "Invalid API credentials", "data": {} }
+          }
+        }
+      },
+      "ShipmozoValidationError": {
+        "description": "Validation failed",
+        "content": {
+          "application/json": {
+            "example": { "result": "0", "message": "Validation error", "data": { "error": "order_id is required" } }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Too many requests",
+        "headers": {
+          "Retry-After": { "schema": { "type": "integer" }, "description": "Seconds to wait before retry" }
+        },
+        "content": {
+          "application/json": {
+            "example": { "result": "0", "message": "Rate limit exceeded", "data": {} }
+          }
+        }
+      }
+    }
+  },
+  "security": [{ "ApiKeyPublic": [] }, { "ApiKeyPrivate": [] }],
+  "x-portal": {
+    "rateLimitHeaders": {
+      "title": "Response headers (from live API / Swagger)",
+      "description": "Shipmozo documents rate limits via response headers, not only in PDF copy. Read these on every call:",
+      "headers": [
+        { "name": "x-ratelimit-limit", "example": "500", "meaning": "Max requests allowed in the current 1-minute window for your API key" },
+        { "name": "x-ratelimit-remaining", "example": "(live value)", "meaning": "Requests left in the current window — decreases by 1 on each API call you make. You only see a new number on the next HTTP response (the page does not auto-update). After ~60s without traffic, the next call usually shows remaining closer to 500 again (sliding window)." }
+      ],
+      "note": "498 in tutorials means '2 calls used this minute' — not a fixed cap. Use the portal 'Check live rate limit' or Execute API to read current headers."
+    },
+    "errorCodes": [
+      { "code": "PROFILE_UNDER_VERIFICATION", "result": "0", "typicalMessage": "Your profile is under verification", "when": "Seller KYC not completed or pending approval on Shipmozo panel", "action": "Finish verification in Shipmozo panel — keys are valid; APIs stay blocked until account is approved" },
+      { "code": "AUTH_INVALID", "result": "0", "typicalMessage": "Invalid API credentials", "when": "Wrong or missing public-key / private-key", "action": "Re-login via POST /login or verify panel keys" },
+      { "code": "AUTH_LOGIN_FAILED", "result": "0", "typicalMessage": "Invalid username or password", "when": "POST /login with bad credentials", "action": "Check panel username/password" },
+      { "code": "ORDER_NOT_FOUND", "result": "0", "typicalMessage": "Order not found", "when": "order_id unknown for assign, schedule, cancel, get-detail", "action": "Push order first; use same order_id as on your store" },
+      { "code": "ORDER_ALREADY_EXISTS", "result": "0", "typicalMessage": "Order already exists", "when": "Duplicate order_id on push-order", "action": "Use unique order_id or fetch existing via get-order-detail" },
+      { "code": "WAREHOUSE_REQUIRED", "result": "0", "typicalMessage": "warehouse_id is required", "when": "push-order without valid warehouse_id", "action": "Call get-warehouses or create-warehouse" },
+      { "code": "PINCODE_NOT_SERVICEABLE", "result": "0", "typicalMessage": "Not serviceable", "when": "pincode-serviceability returns serviceable: false", "action": "Choose different courier or pincode pair" },
+      { "code": "COURIER_ASSIGN_FAILED", "result": "0", "typicalMessage": "Courier assignment failed", "when": "Invalid courier_id or order state", "action": "Run rate-calculator; use returned courier_id" },
+      { "code": "AUTO_ASSIGN_NOT_CONFIGURED", "result": "0", "typicalMessage": "please setup auto assign", "when": "auto-assign-order without panel Settings > Auto assign", "action": "Enable auto-assign in Shipmozo panel or use assign-courier" },
+      { "code": "PICKUP_ALREADY_SCHEDULED", "result": "0", "typicalMessage": "Pickup already scheduled", "when": "schedule-pickup when pickups_automatically_scheduled = YES", "action": "Skip schedule-pickup; AWB already generated" },
+      { "code": "CANCEL_NOT_ALLOWED", "result": "0", "typicalMessage": "Cannot cancel order", "when": "Shipment picked up or delivered", "action": "Check order status via track-order" },
+      { "code": "AWB_NOT_FOUND", "result": "0", "typicalMessage": "AWB not found", "when": "track-order / get-order-label with invalid awb_number", "action": "Use awb_number from assign-courier or auto-assign response" },
+      { "code": "VALIDATION_ERROR", "result": "0", "typicalMessage": "Validation error", "when": "Missing required JSON fields", "action": "Fix request body per parameter table" },
+      { "code": "RATE_LIMIT", "result": "0", "typicalMessage": "Rate limit exceeded", "when": "x-ratelimit-remaining hits 0 within the 1-minute window or HTTP 429", "action": "Pause calls; retry after ~60s when remaining rises again" },
+      { "code": "CORS_TRAILING_SLASH", "result": "—", "typicalMessage": "Browser CORS error", "when": "Base URL ends with /", "action": "Use https://shipping-api.com/app/api/v1 without trailing slash" }
+    ],
+    "workflows": [
+      {
+        "id": "forward-standard",
+        "title": "Forward shipment (manual courier)",
+        "steps": [
+          "POST /login — store public-key & private-key",
+          "GET /get-warehouses — pick warehouse_id",
+          "POST /pincode-serviceability — verify route",
+          "POST /rate-calculator — choose courier_id",
+          "POST /push-order — create order in panel",
+          "POST /assign-courier — assign courier & get AWB",
+          "If pickups_automatically_scheduled = NO → POST /schedule-pickup",
+          "GET /get-order-label/{awb_number} — shipping label",
+          "GET /track-order?awb_number=… — tracking"
+        ]
+      },
+      {
+        "id": "forward-auto",
+        "title": "Forward shipment (auto-assign)",
+        "steps": [
+          "Configure Settings → Auto assign in Shipmozo panel",
+          "POST /push-order",
+          "POST /auto-assign-order — AWB + courier in one call",
+          "GET /track-order / get-order-label as needed"
+        ]
+      },
+      {
+        "id": "return",
+        "title": "Return order",
+        "steps": [
+          "GET /get-return-reason — pick return_reason_id",
+          "POST /push-return-order",
+          "POST /assign-courier or /auto-assign-order",
+          "GET /track-order"
+        ]
+      },
+      {
+        "id": "cancel",
+        "title": "Cancel before pickup",
+        "steps": [
+          "POST /cancel-order with order_id + awb_number",
+          "Confirm result = 1"
+        ]
+      },
+      {
+        "id": "ndr",
+        "title": "NDR handling",
+        "steps": [
+          "GET /get-ndr-all — list non-delivery reports",
+          "POST /ndr-action/{awb_number} — reattempt / RTO / etc."
+        ]
+      }
+    ],
+    "glossary": [
+      { "term": "order_id", "meaning": "Your store's unique order ID; must match across push, assign, and cancel" },
+      { "term": "reference_id", "meaning": "Shipmozo reference (often same as order_id)" },
+      { "term": "awb_number", "meaning": "Air Waybill tracking number from courier" },
+      { "term": "warehouse_id", "meaning": "Pickup location ID from get-warehouses / create-warehouse" },
+      { "term": "courier_id", "meaning": "Numeric ID from rate-calculator response" },
+      { "term": "pickups_automatically_scheduled", "meaning": "YES = skip schedule-pickup; NO = call schedule-pickup after assign" },
+      { "term": "NDR", "meaning": "Non-Delivery Report — failed delivery attempt" }
+    ]
+  },
+  "operations": {
+    "getApiInfo": {
+      "security": [],
+      "summary": "API health / version",
+      "x-useCases": ["Health check before batch jobs", "Verify connectivity from new server"]
+    },
+    "Login": {
+      "security": [],
+      "summary": "Login & obtain API keys",
+      "x-useCases": ["Bootstrap integration — fetch public_key and private_key", "Rotate keys after password change"],
+      "x-errors": ["AUTH_LOGIN_FAILED"]
+    },
+    "pushOrders": {
+      "x-useCases": ["Sync e-commerce order to Shipmozo panel", "COD and prepaid orders"],
+      "x-errors": ["ORDER_ALREADY_EXISTS", "WAREHOUSE_REQUIRED", "VALIDATION_ERROR"]
+    },
+    "pushReturnOrder": {
+      "x-useCases": ["Customer return with pickup from customer address"],
+      "x-errors": ["VALIDATION_ERROR", "ORDER_NOT_FOUND"]
+    },
+    "assignCourier": {
+      "x-useCases": ["Manual courier selection after rate comparison"],
+      "x-errors": ["ORDER_NOT_FOUND", "COURIER_ASSIGN_FAILED"]
+    },
+    "schedulePickup": {
+      "x-useCases": ["When rate-calculator returns pickups_automatically_scheduled: NO"],
+      "x-errors": ["ORDER_NOT_FOUND", "PICKUP_ALREADY_SCHEDULED"]
+    },
+    "cancelOrder": {
+      "x-useCases": ["Cancel before courier pickup"],
+      "x-errors": ["ORDER_NOT_FOUND", "CANCEL_NOT_ALLOWED"]
+    },
+    "autoCourierAssign": {
+      "x-useCases": ["One-shot assign when panel auto-assign is configured"],
+      "x-errors": ["AUTO_ASSIGN_NOT_CONFIGURED", "ORDER_NOT_FOUND"]
+    },
+    "pincodeServiceability": {
+      "x-useCases": ["Checkout pincode check", "Pre-validate before push-order"]
+    },
+    "trackOrder": {
+      "x-errors": ["AWB_NOT_FOUND"]
+    },
+    "getReturnReason": {
+      "security": [{ "ApiKeyPublic": [] }, { "ApiKeyPrivate": [] }],
+      "x-useCases": ["Populate return reason dropdown before push-return-order"]
+    }
+  }
+}

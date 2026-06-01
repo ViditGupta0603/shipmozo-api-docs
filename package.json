@@ -1,0 +1,20 @@
+{
+  "name": "shipmozo-api-docs",
+  "version": "1.0.0",
+  "description": "Shipmozo developer portal — API docs, tester, and OpenAPI spec",
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node scripts/export-openapi.js",
+    "build:spec": "node scripts/export-openapi.js",
+    "prestart": "node scripts/export-openapi.js",
+    "start": "node server.js",
+    "validate": "npx @redocly/cli lint public/assets/spec.json"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "yamljs": "^0.3.0"
+  }
+}

@@ -1,0 +1,2105 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Shipping API Version 1",
+        "description": "Shipping API documentaion helps you to integrate API's for your mobile or own web solution. It will help you integrate your system with shipping solution.",
+        "contact": {
+            "email": "munish@apporio.in"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://shipping-api.com/app/api/v1",
+            "description": "Production API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/info": {
+            "get": {
+                "tags": [
+                    "Common"
+                ],
+                "summary": "Get Api Version Detail",
+                "description": "Get Api Version Detail",
+                "operationId": "getApiInfo",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/countries": {
+            "get": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "Get Countries",
+                "description": "Get All Countries",
+                "operationId": "Countries",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/pincode-serviceability": {
+            "post": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "Check Pincode Serviceability",
+                "description": "Check Pincode Serviceability",
+                "operationId": "pincodeServiceability",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Pincode Serviceability Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "pickup_pincode": {
+                                        "description": "Pickup Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "delivery_pincode": {
+                                        "description": "Delivery Pincode",
+                                        "format": "string",
+                                        "default": "110001"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "serviceable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-return-reason": {
+            "get": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "Get Return Reason",
+                "description": "Get All Return Reason",
+                "operationId": "getReturnReason",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/track-order": {
+            "get": {
+                "tags": [
+                    "Track"
+                ],
+                "summary": "Track Order Shipment Status",
+                "description": "Track Order Shipment Status",
+                "operationId": "trackOrder",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "awb_number",
+                        "in": "query",
+                        "description": "Awb Number",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/create-shipper": {
+            "post": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "create shipper",
+                "description": "create shipper",
+                "operationId": "createShipper",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Create shipper Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Name",
+                                        "format": "string",
+                                        "default": "Rahul"
+                                    },
+                                    "phone": {
+                                        "description": "Phone",
+                                        "format": "string",
+                                        "default": "9876543210"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "format": "string",
+                                        "default": "test@gmail.com"
+                                    },
+                                    "address_line_one": {
+                                        "description": "Address Line One",
+                                        "format": "string",
+                                        "default": "delhi railway station"
+                                    },
+                                    "address_line_two": {
+                                        "description": "Address Line Two",
+                                        "format": "string",
+                                        "default": "new delhi"
+                                    },
+                                    "pin_code": {
+                                        "description": "Pincode",
+                                        "format": "string",
+                                        "default": "141211"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "shipper_id": "12345"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-order-label/{awb_number}": {
+            "get": {
+                "tags": [
+                    "Label"
+                ],
+                "summary": "Get Order Label",
+                "description": "Get Order Label",
+                "operationId": "getOrderLabel",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "awb_number",
+                        "in": "path",
+                        "description": "AWB Number",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type_of_label",
+                        "in": "query",
+                        "description": "Pass PDF, For PDF label type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/push-order": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Push Order",
+                "description": "Push Order on webparex system",
+                "operationId": "pushOrders",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Push order details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order Id",
+                                        "format": "string",
+                                        "default": "ordID"
+                                    },
+                                    "order_date": {
+                                        "description": "Order Date",
+                                        "format": "string",
+                                        "default": "2024-01-06"
+                                    },
+                                    "consignee_name": {
+                                        "description": "Consignee Name",
+                                        "format": "string",
+                                        "default": "John"
+                                    },
+                                    "consignee_phone": {
+                                        "description": "Consignee Phone",
+                                        "format": "string",
+                                        "default": "8000042323"
+                                    },
+                                    "consignee_alternate_phone": {
+                                        "description": "Consignee Alternate Phone",
+                                        "format": "string",
+                                        "default": "8000042323"
+                                    },
+                                    "consignee_email": {
+                                        "description": "Consignee Email",
+                                        "format": "string",
+                                        "default": "johnhelp@gmail.com"
+                                    },
+                                    "consignee_address_line_one": {
+                                        "description": "Consignee Address Line One",
+                                        "format": "string",
+                                        "default": "Sector 49"
+                                    },
+                                    "consignee_address_line_two": {
+                                        "description": "Consignee Address Line Two",
+                                        "format": "string",
+                                        "default": "Sohna Road"
+                                    },
+                                    "consignee_pin_code": {
+                                        "description": "Consignee Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "consignee_city": {
+                                        "description": "Consignee City",
+                                        "format": "string",
+                                        "default": "Gurgaon"
+                                    },
+                                    "consignee_state": {
+                                        "description": "Consignee State",
+                                        "format": "string",
+                                        "default": "Haryana"
+                                    },
+                                    "product_detail": {
+                                        "description": "Product Details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "sku_number": {
+                                                    "type": "string"
+                                                },
+                                                "quantity": {
+                                                    "type": "number"
+                                                },
+                                                "discount": {
+                                                    "type": "number"
+                                                },
+                                                "hsn": {
+                                                    "type": "string"
+                                                },
+                                                "unit_price": {
+                                                    "type": "money"
+                                                },
+                                                "product_category": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "name": "Laptop",
+                                                "sku_number": "22",
+                                                "quantity": 1,
+                                                "discount": "",
+                                                "hsn": "#123",
+                                                "unit_price": 1000,
+                                                "product_category": "Other"
+                                            }
+                                        ]
+                                    },
+                                    "payment_type": {
+                                        "description": "Payment Type (PREPAID / COD)",
+                                        "format": "string",
+                                        "default": "PREPAID"
+                                    },
+                                    "cod_amount": {
+                                        "description": "COD Amount",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "shipping_charges": {
+                                        "description": "Shipping Charges",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "weight": {
+                                        "description": "Weight (in GRAM)",
+                                        "format": "string",
+                                        "default": "200"
+                                    },
+                                    "length": {
+                                        "description": "Length",
+                                        "format": "string",
+                                        "default": "10"
+                                    },
+                                    "width": {
+                                        "description": "Width",
+                                        "format": "string",
+                                        "default": "20"
+                                    },
+                                    "height": {
+                                        "description": "Height",
+                                        "format": "string",
+                                        "default": "15"
+                                    },
+                                    "warehouse_id": {
+                                        "description": "Warehouse ID",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "gst_ewaybill_number": {
+                                        "description": "GST Ewaybill Number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "gstin_number": {
+                                        "description": "GST Number",
+                                        "format": "string",
+                                        "default": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "Info": "Order Pushed Successfully",
+                                            "order_id": "ordID",
+                                            "refrence_id": "ordID"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/international-push-order": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "international Push Order",
+                "description": "International Push Order on webparex system",
+                "operationId": "internationalPushOrder",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Push order details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order Id",
+                                        "format": "string",
+                                        "default": "ordID"
+                                    },
+                                    "order_date": {
+                                        "description": "Order Date",
+                                        "format": "string",
+                                        "default": "2024-01-06"
+                                    },
+                                    "consignee_name": {
+                                        "description": "Consignee Name",
+                                        "format": "string",
+                                        "default": "John"
+                                    },
+                                    "consignee_company_name": {
+                                        "description": "Consignee Company Name",
+                                        "format": "string",
+                                        "default": "John"
+                                    },
+                                    "consignee_phone": {
+                                        "description": "Consignee Phone",
+                                        "format": "string",
+                                        "default": "8000042323"
+                                    },
+                                    "consignee_alternate_phone": {
+                                        "description": "Consignee Alternate Phone",
+                                        "format": "string",
+                                        "default": "8000042323"
+                                    },
+                                    "consignee_email": {
+                                        "description": "Consignee Email",
+                                        "format": "string",
+                                        "default": "johnhelp@gmail.com"
+                                    },
+                                    "consignee_address_line_one": {
+                                        "description": "Consignee Address Line One",
+                                        "format": "string",
+                                        "default": "Sector 49"
+                                    },
+                                    "consignee_address_line_two": {
+                                        "description": "Consignee Address Line Two",
+                                        "format": "string",
+                                        "default": "Sohna Road"
+                                    },
+                                    "consignee_country_id": {
+                                        "description": "Consignee Country id",
+                                        "format": "string",
+                                        "default": "2"
+                                    },
+                                    "consignee_pin_code": {
+                                        "description": "Consignee Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "consignee_city": {
+                                        "description": "Consignee City",
+                                        "format": "string",
+                                        "default": "Gurgaon"
+                                    },
+                                    "consignee_state": {
+                                        "description": "Consignee State",
+                                        "format": "string",
+                                        "default": "Haryana"
+                                    },
+                                    "consignee_gst_number": {
+                                        "description": "Consignee Gst number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "row_content": {
+                                        "description": "Product Details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "sku_number": {
+                                                    "type": "string"
+                                                },
+                                                "quantity": {
+                                                    "type": "number"
+                                                },
+                                                "discount": {
+                                                    "type": "number"
+                                                },
+                                                "hsn": {
+                                                    "type": "string"
+                                                },
+                                                "unit_price": {
+                                                    "type": "money"
+                                                },
+                                                "tax": {
+                                                    "type": "money"
+                                                },
+                                                "product_category": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "name": "Laptop",
+                                                "sku_number": "22",
+                                                "quantity": 1,
+                                                "discount": "",
+                                                "hsn": "#123",
+                                                "unit_price": 1000,
+                                                "tax": 0,
+                                                "product_category": "Other"
+                                            }
+                                        ]
+                                    },
+                                    "type_of_package": {
+                                        "description": "Type Of Package (SPS / MPS)",
+                                        "format": "string",
+                                        "default": "SPS"
+                                    },
+                                    "shipment_purpose": {
+                                        "description": "Shipment Purpose (DCSB4/SCSB4/CSB5)",
+                                        "format": "string",
+                                        "default": "SCSB4"
+                                    },
+                                    "shipping_charges": {
+                                        "description": "Shipping Charges",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "weight": {
+                                        "description": "Weight (in GRAM)",
+                                        "format": "string",
+                                        "default": "200"
+                                    },
+                                    "length": {
+                                        "description": "Length",
+                                        "format": "string",
+                                        "default": "10"
+                                    },
+                                    "width": {
+                                        "description": "Width",
+                                        "format": "string",
+                                        "default": "20"
+                                    },
+                                    "height": {
+                                        "description": "Height",
+                                        "format": "string",
+                                        "default": "15"
+                                    },
+                                    "warehouse_id": {
+                                        "description": "Warehouse ID",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "gst_ewaybill_number": {
+                                        "description": "GST Ewaybill Number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "gstin_number": {
+                                        "description": "GST Number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "currency": {
+                                        "description": "currency",
+                                        "format": "string",
+                                        "default": "INR"
+                                    },
+                                    "iec_number": {
+                                        "description": "IEC Number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "terms_of_invoice": {
+                                        "description": "terms_of_invoice (FOB/CIF)",
+                                        "format": "string",
+                                        "default": "FOB"
+                                    },
+                                    "ecomm": {
+                                        "description": "ecomm (YES/NO)",
+                                        "format": "string",
+                                        "default": "NO"
+                                    },
+                                    "ad_code": {
+                                        "description": "Ad Code",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "invoice_number": {
+                                        "description": "Invoice Number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "invoice_date": {
+                                        "description": "Invoice Date",
+                                        "format": "string",
+                                        "default": "2025-04-01"
+                                    },
+                                    "meis": {
+                                        "description": "meis (YES/NO)",
+                                        "format": "string",
+                                        "default": "NO"
+                                    },
+                                    "export_type": {
+                                        "description": "Export Type (BOND/UT)",
+                                        "format": "string",
+                                        "default": "NA"
+                                    },
+                                    "ioss_number": {
+                                        "description": "ioss_number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "lut_number": {
+                                        "description": "lut_number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "lut_issue_date": {
+                                        "description": "lut_issue_date",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "lut_till_date": {
+                                        "description": "lut_till_date",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "freight_amount": {
+                                        "description": "freight_amount",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "incoterms": {
+                                        "description": "incoterms (DDU/DDP)",
+                                        "format": "string",
+                                        "default": "DDP"
+                                    },
+                                    "insurance_amount": {
+                                        "description": "insurance_amount",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "shipper_id": {
+                                        "description": "shipper_id (Get this from create-shipper API)",
+                                        "format": "string",
+                                        "default": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "Info": "Order Pushed Successfully",
+                                            "order_id": "ordID",
+                                            "refrence_id": "ordID"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/push-return-order": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Push Return Order",
+                "description": "Push Return Order on webparex system",
+                "operationId": "pushReturnOrder",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Push Return order details",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order Id",
+                                        "format": "string",
+                                        "default": "ordID"
+                                    },
+                                    "order_date": {
+                                        "description": "Order Date",
+                                        "format": "string",
+                                        "default": "2024-07-27"
+                                    },
+                                    "pickup_name": {
+                                        "description": "Pickup Name",
+                                        "format": "string",
+                                        "default": "John"
+                                    },
+                                    "pickup_phone": {
+                                        "description": "Pickup Phone",
+                                        "format": "string",
+                                        "default": "8000042323"
+                                    },
+                                    "pickup_email": {
+                                        "description": "Pickup Email",
+                                        "format": "string",
+                                        "default": "johnhelp@gmail.com"
+                                    },
+                                    "pickup_address_line_one": {
+                                        "description": "Pickup Address Line One",
+                                        "format": "string",
+                                        "default": "Sector 49"
+                                    },
+                                    "pickup_address_line_two": {
+                                        "description": "Pickup Address Line Two",
+                                        "format": "string",
+                                        "default": "Sohna Road"
+                                    },
+                                    "pickup_pin_code": {
+                                        "description": "Pickup Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "pickup_city": {
+                                        "description": "Pickup City",
+                                        "format": "string",
+                                        "default": "Gurgaon"
+                                    },
+                                    "pickup_state": {
+                                        "description": "Pickup State",
+                                        "format": "string",
+                                        "default": "Haryana"
+                                    },
+                                    "product_detail": {
+                                        "description": "Product Details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "sku_number": {
+                                                    "type": "string"
+                                                },
+                                                "quantity": {
+                                                    "type": "number"
+                                                },
+                                                "discount": {
+                                                    "type": "number"
+                                                },
+                                                "hsn": {
+                                                    "type": "string"
+                                                },
+                                                "unit_price": {
+                                                    "type": "money"
+                                                },
+                                                "product_category": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "name": "Product Name",
+                                                "sku_number": "22",
+                                                "quantity": 1,
+                                                "discount": "",
+                                                "hsn": "#123",
+                                                "unit_price": 1000,
+                                                "product_category": "Other"
+                                            }
+                                        ]
+                                    },
+                                    "payment_type": {
+                                        "description": "Payment Type (PREPAID)",
+                                        "format": "string",
+                                        "default": "PREPAID"
+                                    },
+                                    "weight": {
+                                        "description": "Weight (in GRAM)",
+                                        "format": "string",
+                                        "default": "2"
+                                    },
+                                    "length": {
+                                        "description": "Length",
+                                        "format": "string",
+                                        "default": "10"
+                                    },
+                                    "width": {
+                                        "description": "Width",
+                                        "format": "string",
+                                        "default": "500"
+                                    },
+                                    "height": {
+                                        "description": "Height",
+                                        "format": "string",
+                                        "default": "15"
+                                    },
+                                    "warehouse_id": {
+                                        "description": "Warehouse ID",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "return_reason_id": {
+                                        "description": "Return Reason ID",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "customer_request": {
+                                        "description": "Customer Request (REFUND/EXCHANGE)",
+                                        "format": "string",
+                                        "default": "REFUND"
+                                    },
+                                    "reason_comment": {
+                                        "description": "Reason Comment",
+                                        "format": "string",
+                                        "default": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "Info": "Order Pushed Successfully",
+                                            "order_id": "ordID",
+                                            "refrence_id": "ordID"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/assign-courier": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Assign Courier",
+                "description": "Assign Courier",
+                "operationId": "assignCourier",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Assign Courier Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "format": "string",
+                                        "default": "test123"
+                                    },
+                                    "courier_id": {
+                                        "description": "Courier ID",
+                                        "format": "string",
+                                        "default": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "order_id": "test123",
+                                            "refrence_id": "test123",
+                                            "courier": "Delhivery"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/schedule-pickup": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Schedule Pickup (Optional)",
+                "description": "Schedule Pickup",
+                "operationId": "schedulePickup",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Schedule Pickup Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "format": "string",
+                                        "default": "test123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "order_id": "test123",
+                                            "refrence_id": "test123",
+                                            "courier": "Delhivery",
+                                            "awb_number": "123123123",
+                                            "lr_number": "58930303"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/cancel-order": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "cancel order",
+                "description": "cancel order",
+                "operationId": "cancelOrder",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "cancel order Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "format": "string",
+                                        "default": "test123"
+                                    },
+                                    "awb_number": {
+                                        "description": "Awb Number",
+                                        "format": "string",
+                                        "default": "38389839839839"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "order_id": "test123",
+                                            "refrence_id": "test123"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auto-assign-order": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Auto Assign Order",
+                "description": "Auto Assign Order",
+                "operationId": "autoCourierAssign",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Auto Assign Order Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "format": "string",
+                                        "default": "test123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "order_id": "test123",
+                                            "refrence_id": "test123",
+                                            "awb_number": "123123123",
+                                            "courier_company": "Delhivery",
+                                            "courier_company_service": "Delhivery"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/generate-manifest": {
+            "get": {
+                "tags": [
+                    "Label"
+                ],
+                "summary": "Generate Manifest",
+                "description": "Generate Manifest",
+                "operationId": "generateManifest",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "awb_numbers",
+                        "in": "query",
+                        "description": "AWB Number (comma separated, max: 25)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/get-ndr-all": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get Ndr Orders",
+                "description": "Get Ndr Orders",
+                "operationId": "getAllNdrShipments",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "From Date, Format: dd-mm-yyyy, default: 2 months",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "To Date, Format: dd-mm-yyyy, default: 2 months",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Records per page, max:100, default:25",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/ndr-action/{awb_number}": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "NDR Action",
+                "description": "NDR Action",
+                "operationId": "ndrOrderAction",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "awb_number",
+                        "in": "path",
+                        "description": "AWB Number",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "in": "query",
+                        "description": "Action, in: REATTEMPT, RETURN",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/get-order-detail/{order_id}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get Order Detail",
+                "description": "Get Order Detail",
+                "operationId": "getOrderDetail",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "order_id",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/rate-calculator": {
+            "post": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "Rate Calculator",
+                "description": "Rate Calculator",
+                "operationId": "rateCalculator",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Rate Calculator Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order Id",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "pickup_pincode": {
+                                        "description": "Pickup Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "delivery_pincode": {
+                                        "description": "Delivery Pincode",
+                                        "format": "string",
+                                        "default": "110001"
+                                    },
+                                    "payment_type": {
+                                        "description": "Payment Type (PREPAID/COD)",
+                                        "format": "string",
+                                        "default": "PREPAID"
+                                    },
+                                    "shipment_type": {
+                                        "description": "Shipment Type (FORWARD/RETURN)",
+                                        "format": "string",
+                                        "default": "FORWARD"
+                                    },
+                                    "order_amount": {
+                                        "description": "Order Amount",
+                                        "format": "string",
+                                        "default": "1000"
+                                    },
+                                    "type_of_package": {
+                                        "description": "Type Of Package (SPS/MPS/B2B)",
+                                        "format": "string",
+                                        "default": "SPS"
+                                    },
+                                    "rov_type": {
+                                        "description": "Rov type (ROV_OWNER/ROV_CARRIER)",
+                                        "format": "string",
+                                        "default": "ROV_OWNER"
+                                    },
+                                    "cod_amount": {
+                                        "description": "COD Amount",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "weight": {
+                                        "description": "Weight (in GRAM)",
+                                        "format": "string",
+                                        "default": "500"
+                                    },
+                                    "dimensions": {
+                                        "description": "dimensions Details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "no_of_box": {
+                                                    "type": "number"
+                                                },
+                                                "length": {
+                                                    "type": "number"
+                                                },
+                                                "width": {
+                                                    "type": "number"
+                                                },
+                                                "height": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "no_of_box": "1",
+                                                "length": "22",
+                                                "width": "10",
+                                                "height": "10"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/international-rate-calculator": {
+            "post": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "International Rate Calculator",
+                "description": "Internatinal Rate Calculator",
+                "operationId": "internationalRateCalculator",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Rate Calculator Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "pickup_pincode": {
+                                        "description": "Pickup Pincode",
+                                        "format": "string",
+                                        "default": "122001"
+                                    },
+                                    "delivery_pincode": {
+                                        "description": "Delivery Pincode",
+                                        "format": "string",
+                                        "default": "110001"
+                                    },
+                                    "delivery_country_id": {
+                                        "description": "Delivery country id",
+                                        "format": "string",
+                                        "default": "2"
+                                    },
+                                    "order_amount": {
+                                        "description": "Order Amount",
+                                        "format": "string",
+                                        "default": "1000"
+                                    },
+                                    "type_of_package": {
+                                        "description": "Type Of Package (SPS/MPS/B2B)",
+                                        "format": "string",
+                                        "default": "SPS"
+                                    },
+                                    "shipment_purpose": {
+                                        "description": "Rov type ('DCSB4','SCSB4','CSB5')",
+                                        "format": "string",
+                                        "default": "SCSB4"
+                                    },
+                                    "weight": {
+                                        "description": "Weight (in GRAM)",
+                                        "format": "string",
+                                        "default": "500"
+                                    },
+                                    "dimensions": {
+                                        "description": "dimensions Details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "no_of_box": {
+                                                    "type": "number"
+                                                },
+                                                "length": {
+                                                    "type": "number"
+                                                },
+                                                "width": {
+                                                    "type": "number"
+                                                },
+                                                "height": {
+                                                    "type": "number"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "example": [
+                                            {
+                                                "no_of_box": "1",
+                                                "length": "22",
+                                                "width": "10",
+                                                "height": "10"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Utility"
+                ],
+                "summary": "Login",
+                "description": "Login",
+                "operationId": "Login",
+                "requestBody": {
+                    "description": "User Login Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "description": "Email Or phone number",
+                                        "format": "string",
+                                        "default": ""
+                                    },
+                                    "password": {
+                                        "description": "password",
+                                        "format": "string",
+                                        "default": ""
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/get-warehouses": {
+            "get": {
+                "tags": [
+                    "Warehouse"
+                ],
+                "summary": "Get Warehouses",
+                "description": "Get all Warehouses",
+                "operationId": "getWarehouses",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "If you have more than 25 records, pass page number (For next 25 records)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/create-warehouse": {
+            "post": {
+                "tags": [
+                    "Warehouse"
+                ],
+                "summary": "create Warehouse",
+                "description": "create Warehouse",
+                "operationId": "createWarehouse",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Create Warehouse Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "address_title": {
+                                        "description": "Address Title",
+                                        "format": "string",
+                                        "default": "test123"
+                                    },
+                                    "name": {
+                                        "description": "Name",
+                                        "format": "string",
+                                        "default": "Rahul"
+                                    },
+                                    "phone": {
+                                        "description": "Phone",
+                                        "format": "string",
+                                        "default": "9876543210"
+                                    },
+                                    "alternate_phone": {
+                                        "description": "Alternate Phone",
+                                        "format": "string",
+                                        "default": "9876543210"
+                                    },
+                                    "email": {
+                                        "description": "Email",
+                                        "format": "string",
+                                        "default": "test@gmail.com"
+                                    },
+                                    "address_line_one": {
+                                        "description": "Address Line One",
+                                        "format": "string",
+                                        "default": "delhi railway station"
+                                    },
+                                    "address_line_two": {
+                                        "description": "Address Line Two",
+                                        "format": "string",
+                                        "default": "new delhi"
+                                    },
+                                    "pin_code": {
+                                        "description": "Pincode",
+                                        "format": "string",
+                                        "default": "141211"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "warehouse_id": "12345"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/order/update-warehouse": {
+            "post": {
+                "tags": [
+                    "Warehouse"
+                ],
+                "summary": "Order Update Warehouse",
+                "description": "Order Update Warehouse",
+                "operationId": "orderUpdateWarehouse",
+                "parameters": [
+                    {
+                        "name": "public-key",
+                        "in": "header",
+                        "description": "Api Public Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "private-key",
+                        "in": "header",
+                        "description": "Api Private Key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Order Update Warehouse Required Parameters",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "order_id": {
+                                        "description": "Order ID",
+                                        "format": "string",
+                                        "default": "test123"
+                                    },
+                                    "warehouse_id": {
+                                        "description": "Warehouse ID",
+                                        "format": "string",
+                                        "default": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "example": {
+                                        "result": "1",
+                                        "message": "Success",
+                                        "data": {
+                                            "order_id": "test123",
+                                            "refrence_id": "test123"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Common",
+            "description": "Common API Endpoints"
+        },
+        {
+            "name": "Orders",
+            "description": "API Endpoints of Orders"
+        },
+        {
+            "name": "Utility",
+            "description": "API Endpoints of Shipment Utilities"
+        },
+        {
+            "name": "Track",
+            "description": "Track"
+        },
+        {
+            "name": "Label",
+            "description": "Label"
+        },
+        {
+            "name": "Warehouse",
+            "description": "Warehouse"
+        }
+    ],
+    "externalDocs": {
+        "description": "Download Pdf",
+        "url": "https://webparex.in/public/sample-file/api-documentation.pdf"
+    }
+}

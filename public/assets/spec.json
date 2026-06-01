@@ -1,0 +1,3220 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Shipmozo Shipping API",
+    "description": "REST API for order fulfillment, courier assignment, tracking, warehouses, NDR, and labels. All responses use `result` (`1` = success, `0` = failure), `message`, and `data`.\n\n**Base URL:** `https://shipping-api.com/app/api/v1` — do not add a trailing slash.\n\n**Auth:** Send `public-key` and `private-key` headers on every protected route, or obtain keys via `POST /login`.\n\n**Rate limits:** Shipmozo returns `x-ratelimit-limit` (500) and `x-ratelimit-remaining` on each response. Quota is **500 requests per 1-minute window** per API key; `remaining` drops with each call and **refreshes when the minute rolls over**.\n\n**Support:** munish@apporio.in",
+    "contact": {
+      "name": "Shipmozo API Support",
+      "email": "munish@apporio.in"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://shipping-api.com/app/api/v1",
+      "description": "Production API Server"
+    }
+  ],
+  "paths": {
+    "/countries": {
+      "get": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "Get Countries",
+        "description": "Get All Countries",
+        "operationId": "Countries",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "International orders reference data"
+        }
+      }
+    },
+    "/pincode-serviceability": {
+      "post": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "Check Pincode Serviceability",
+        "description": "Check Pincode Serviceability",
+        "operationId": "pincodeServiceability",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Pincode Serviceability Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "pickup_pincode": {
+                    "description": "Pickup Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "delivery_pincode": {
+                    "description": "Delivery Pincode",
+                    "format": "string",
+                    "default": "110001"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "serviceable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "Checkout pincode check",
+          "Pre-validate before push-order"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Checkout / pre-push validation"
+        }
+      }
+    },
+    "/get-return-reason": {
+      "get": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "Get Return Reason",
+        "description": "Get All Return Reason",
+        "operationId": "getReturnReason",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-useCases": [
+          "Populate return reason dropdown before push-return-order"
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Before push-return-order"
+        }
+      }
+    },
+    "/track-order": {
+      "get": {
+        "tags": [
+          "Track"
+        ],
+        "summary": "Track Order Shipment Status",
+        "description": "Track Order Shipment Status",
+        "operationId": "trackOrder",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awb_number",
+            "in": "query",
+            "description": "Awb Number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-errors": [
+          "AWB_NOT_FOUND"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Query param awb_number; prefer webhooks over tight polling"
+        }
+      }
+    },
+    "/create-shipper": {
+      "post": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "create shipper",
+        "description": "create shipper",
+        "operationId": "createShipper",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Create shipper Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name": {
+                    "description": "Name",
+                    "format": "string",
+                    "default": "Rahul"
+                  },
+                  "phone": {
+                    "description": "Phone",
+                    "format": "string",
+                    "default": "9876543210"
+                  },
+                  "email": {
+                    "description": "Email",
+                    "format": "string",
+                    "default": "test@gmail.com"
+                  },
+                  "address_line_one": {
+                    "description": "Address Line One",
+                    "format": "string",
+                    "default": "delhi railway station"
+                  },
+                  "address_line_two": {
+                    "description": "Address Line Two",
+                    "format": "string",
+                    "default": "new delhi"
+                  },
+                  "pin_code": {
+                    "description": "Pincode",
+                    "format": "string",
+                    "default": "141211"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "shipper_id": "12345"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Shipper profile setup"
+        }
+      }
+    },
+    "/get-order-label/{awb_number}": {
+      "get": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "Get Order Label",
+        "description": "Get Order Label",
+        "operationId": "getOrderLabel",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awb_number",
+            "in": "path",
+            "description": "AWB Number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type_of_label",
+            "in": "query",
+            "description": "Pass PDF, For PDF label type",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Returns base64 label PNG"
+        }
+      }
+    },
+    "/push-order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Push Order",
+        "description": "Push Order on webparex system",
+        "operationId": "pushOrders",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Push order details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order Id",
+                    "format": "string",
+                    "default": "ordID"
+                  },
+                  "order_date": {
+                    "description": "Order Date",
+                    "format": "string",
+                    "default": "2024-01-06"
+                  },
+                  "consignee_name": {
+                    "description": "Consignee Name",
+                    "format": "string",
+                    "default": "John"
+                  },
+                  "consignee_phone": {
+                    "description": "Consignee Phone",
+                    "format": "string",
+                    "default": "8000042323"
+                  },
+                  "consignee_alternate_phone": {
+                    "description": "Consignee Alternate Phone",
+                    "format": "string",
+                    "default": "8000042323"
+                  },
+                  "consignee_email": {
+                    "description": "Consignee Email",
+                    "format": "string",
+                    "default": "johnhelp@gmail.com"
+                  },
+                  "consignee_address_line_one": {
+                    "description": "Consignee Address Line One",
+                    "format": "string",
+                    "default": "Sector 49"
+                  },
+                  "consignee_address_line_two": {
+                    "description": "Consignee Address Line Two",
+                    "format": "string",
+                    "default": "Sohna Road"
+                  },
+                  "consignee_pin_code": {
+                    "description": "Consignee Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "consignee_city": {
+                    "description": "Consignee City",
+                    "format": "string",
+                    "default": "Gurgaon"
+                  },
+                  "consignee_state": {
+                    "description": "Consignee State",
+                    "format": "string",
+                    "default": "Haryana"
+                  },
+                  "product_detail": {
+                    "description": "Product Details",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "sku_number": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "discount": {
+                          "type": "number"
+                        },
+                        "hsn": {
+                          "type": "string"
+                        },
+                        "unit_price": {
+                          "type": "money"
+                        },
+                        "product_category": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "name": "Laptop",
+                        "sku_number": "22",
+                        "quantity": 1,
+                        "discount": "",
+                        "hsn": "#123",
+                        "unit_price": 1000,
+                        "product_category": "Other"
+                      }
+                    ]
+                  },
+                  "payment_type": {
+                    "description": "Payment Type (PREPAID / COD)",
+                    "format": "string",
+                    "default": "PREPAID"
+                  },
+                  "cod_amount": {
+                    "description": "COD Amount",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "shipping_charges": {
+                    "description": "Shipping Charges",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "weight": {
+                    "description": "Weight (in GRAM)",
+                    "format": "string",
+                    "default": "200"
+                  },
+                  "length": {
+                    "description": "Length",
+                    "format": "string",
+                    "default": "10"
+                  },
+                  "width": {
+                    "description": "Width",
+                    "format": "string",
+                    "default": "20"
+                  },
+                  "height": {
+                    "description": "Height",
+                    "format": "string",
+                    "default": "15"
+                  },
+                  "warehouse_id": {
+                    "description": "Warehouse ID",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "gst_ewaybill_number": {
+                    "description": "GST Ewaybill Number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "gstin_number": {
+                    "description": "GST Number",
+                    "format": "string",
+                    "default": ""
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "Info": "Order Pushed Successfully",
+                      "order_id": "ordID",
+                      "refrence_id": "ordID"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "Sync e-commerce order to Shipmozo panel",
+          "COD and prepaid orders"
+        ],
+        "x-errors": [
+          "ORDER_ALREADY_EXISTS",
+          "WAREHOUSE_REQUIRED",
+          "VALIDATION_ERROR"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Create forward order"
+        }
+      }
+    },
+    "/international-push-order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "international Push Order",
+        "description": "International Push Order on webparex system",
+        "operationId": "internationalPushOrder",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Push order details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order Id",
+                    "format": "string",
+                    "default": "ordID"
+                  },
+                  "order_date": {
+                    "description": "Order Date",
+                    "format": "string",
+                    "default": "2024-01-06"
+                  },
+                  "consignee_name": {
+                    "description": "Consignee Name",
+                    "format": "string",
+                    "default": "John"
+                  },
+                  "consignee_company_name": {
+                    "description": "Consignee Company Name",
+                    "format": "string",
+                    "default": "John"
+                  },
+                  "consignee_phone": {
+                    "description": "Consignee Phone",
+                    "format": "string",
+                    "default": "8000042323"
+                  },
+                  "consignee_alternate_phone": {
+                    "description": "Consignee Alternate Phone",
+                    "format": "string",
+                    "default": "8000042323"
+                  },
+                  "consignee_email": {
+                    "description": "Consignee Email",
+                    "format": "string",
+                    "default": "johnhelp@gmail.com"
+                  },
+                  "consignee_address_line_one": {
+                    "description": "Consignee Address Line One",
+                    "format": "string",
+                    "default": "Sector 49"
+                  },
+                  "consignee_address_line_two": {
+                    "description": "Consignee Address Line Two",
+                    "format": "string",
+                    "default": "Sohna Road"
+                  },
+                  "consignee_country_id": {
+                    "description": "Consignee Country id",
+                    "format": "string",
+                    "default": "2"
+                  },
+                  "consignee_pin_code": {
+                    "description": "Consignee Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "consignee_city": {
+                    "description": "Consignee City",
+                    "format": "string",
+                    "default": "Gurgaon"
+                  },
+                  "consignee_state": {
+                    "description": "Consignee State",
+                    "format": "string",
+                    "default": "Haryana"
+                  },
+                  "consignee_gst_number": {
+                    "description": "Consignee Gst number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "row_content": {
+                    "description": "Product Details",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "sku_number": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "discount": {
+                          "type": "number"
+                        },
+                        "hsn": {
+                          "type": "string"
+                        },
+                        "unit_price": {
+                          "type": "money"
+                        },
+                        "tax": {
+                          "type": "money"
+                        },
+                        "product_category": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "name": "Laptop",
+                        "sku_number": "22",
+                        "quantity": 1,
+                        "discount": "",
+                        "hsn": "#123",
+                        "unit_price": 1000,
+                        "tax": 0,
+                        "product_category": "Other"
+                      }
+                    ]
+                  },
+                  "type_of_package": {
+                    "description": "Type Of Package (SPS / MPS)",
+                    "format": "string",
+                    "default": "SPS"
+                  },
+                  "shipment_purpose": {
+                    "description": "Shipment Purpose (DCSB4/SCSB4/CSB5)",
+                    "format": "string",
+                    "default": "SCSB4"
+                  },
+                  "shipping_charges": {
+                    "description": "Shipping Charges",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "weight": {
+                    "description": "Weight (in GRAM)",
+                    "format": "string",
+                    "default": "200"
+                  },
+                  "length": {
+                    "description": "Length",
+                    "format": "string",
+                    "default": "10"
+                  },
+                  "width": {
+                    "description": "Width",
+                    "format": "string",
+                    "default": "20"
+                  },
+                  "height": {
+                    "description": "Height",
+                    "format": "string",
+                    "default": "15"
+                  },
+                  "warehouse_id": {
+                    "description": "Warehouse ID",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "gst_ewaybill_number": {
+                    "description": "GST Ewaybill Number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "gstin_number": {
+                    "description": "GST Number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "currency": {
+                    "description": "currency",
+                    "format": "string",
+                    "default": "INR"
+                  },
+                  "iec_number": {
+                    "description": "IEC Number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "terms_of_invoice": {
+                    "description": "terms_of_invoice (FOB/CIF)",
+                    "format": "string",
+                    "default": "FOB"
+                  },
+                  "ecomm": {
+                    "description": "ecomm (YES/NO)",
+                    "format": "string",
+                    "default": "NO"
+                  },
+                  "ad_code": {
+                    "description": "Ad Code",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "invoice_number": {
+                    "description": "Invoice Number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "invoice_date": {
+                    "description": "Invoice Date",
+                    "format": "string",
+                    "default": "2025-04-01"
+                  },
+                  "meis": {
+                    "description": "meis (YES/NO)",
+                    "format": "string",
+                    "default": "NO"
+                  },
+                  "export_type": {
+                    "description": "Export Type (BOND/UT)",
+                    "format": "string",
+                    "default": "NA"
+                  },
+                  "ioss_number": {
+                    "description": "ioss_number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "lut_number": {
+                    "description": "lut_number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "lut_issue_date": {
+                    "description": "lut_issue_date",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "lut_till_date": {
+                    "description": "lut_till_date",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "freight_amount": {
+                    "description": "freight_amount",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "incoterms": {
+                    "description": "incoterms (DDU/DDP)",
+                    "format": "string",
+                    "default": "DDP"
+                  },
+                  "insurance_amount": {
+                    "description": "insurance_amount",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "shipper_id": {
+                    "description": "shipper_id (Get this from create-shipper API)",
+                    "format": "string",
+                    "default": ""
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "Info": "Order Pushed Successfully",
+                      "order_id": "ordID",
+                      "refrence_id": "ordID"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "International forward order"
+        }
+      }
+    },
+    "/push-return-order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Push Return Order",
+        "description": "Push Return Order on webparex system",
+        "operationId": "pushReturnOrder",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Push Return order details",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order Id",
+                    "format": "string",
+                    "default": "ordID"
+                  },
+                  "order_date": {
+                    "description": "Order Date",
+                    "format": "string",
+                    "default": "2024-07-27"
+                  },
+                  "pickup_name": {
+                    "description": "Pickup Name",
+                    "format": "string",
+                    "default": "John"
+                  },
+                  "pickup_phone": {
+                    "description": "Pickup Phone",
+                    "format": "string",
+                    "default": "8000042323"
+                  },
+                  "pickup_email": {
+                    "description": "Pickup Email",
+                    "format": "string",
+                    "default": "johnhelp@gmail.com"
+                  },
+                  "pickup_address_line_one": {
+                    "description": "Pickup Address Line One",
+                    "format": "string",
+                    "default": "Sector 49"
+                  },
+                  "pickup_address_line_two": {
+                    "description": "Pickup Address Line Two",
+                    "format": "string",
+                    "default": "Sohna Road"
+                  },
+                  "pickup_pin_code": {
+                    "description": "Pickup Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "pickup_city": {
+                    "description": "Pickup City",
+                    "format": "string",
+                    "default": "Gurgaon"
+                  },
+                  "pickup_state": {
+                    "description": "Pickup State",
+                    "format": "string",
+                    "default": "Haryana"
+                  },
+                  "product_detail": {
+                    "description": "Product Details",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "sku_number": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "number"
+                        },
+                        "discount": {
+                          "type": "number"
+                        },
+                        "hsn": {
+                          "type": "string"
+                        },
+                        "unit_price": {
+                          "type": "money"
+                        },
+                        "product_category": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "name": "Product Name",
+                        "sku_number": "22",
+                        "quantity": 1,
+                        "discount": "",
+                        "hsn": "#123",
+                        "unit_price": 1000,
+                        "product_category": "Other"
+                      }
+                    ]
+                  },
+                  "payment_type": {
+                    "description": "Payment Type (PREPAID)",
+                    "format": "string",
+                    "default": "PREPAID"
+                  },
+                  "weight": {
+                    "description": "Weight (in GRAM)",
+                    "format": "string",
+                    "default": "2"
+                  },
+                  "length": {
+                    "description": "Length",
+                    "format": "string",
+                    "default": "10"
+                  },
+                  "width": {
+                    "description": "Width",
+                    "format": "string",
+                    "default": "500"
+                  },
+                  "height": {
+                    "description": "Height",
+                    "format": "string",
+                    "default": "15"
+                  },
+                  "warehouse_id": {
+                    "description": "Warehouse ID",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "return_reason_id": {
+                    "description": "Return Reason ID",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "customer_request": {
+                    "description": "Customer Request (REFUND/EXCHANGE)",
+                    "format": "string",
+                    "default": "REFUND"
+                  },
+                  "reason_comment": {
+                    "description": "Reason Comment",
+                    "format": "string",
+                    "default": ""
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "Info": "Order Pushed Successfully",
+                      "order_id": "ordID",
+                      "refrence_id": "ordID"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "Customer return with pickup from customer address"
+        ],
+        "x-errors": [
+          "VALIDATION_ERROR",
+          "ORDER_NOT_FOUND"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Return / reverse pickup order"
+        }
+      }
+    },
+    "/assign-courier": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Assign Courier",
+        "description": "Assign Courier",
+        "operationId": "assignCourier",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Assign Courier Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order ID",
+                    "format": "string",
+                    "default": "test123"
+                  },
+                  "courier_id": {
+                    "description": "Courier ID",
+                    "format": "string",
+                    "default": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "order_id": "test123",
+                      "refrence_id": "test123",
+                      "courier": "Delhivery"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "Manual courier selection after rate comparison"
+        ],
+        "x-errors": [
+          "ORDER_NOT_FOUND",
+          "COURIER_ASSIGN_FAILED"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Manual courier from rate-calculator"
+        }
+      }
+    },
+    "/schedule-pickup": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Schedule Pickup (Optional)",
+        "description": "Schedule Pickup",
+        "operationId": "schedulePickup",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Schedule Pickup Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order ID",
+                    "format": "string",
+                    "default": "test123"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "order_id": "test123",
+                      "refrence_id": "test123",
+                      "courier": "Delhivery",
+                      "awb_number": "123123123",
+                      "lr_number": "58930303"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "When rate-calculator returns pickups_automatically_scheduled: NO"
+        ],
+        "x-errors": [
+          "ORDER_NOT_FOUND",
+          "PICKUP_ALREADY_SCHEDULED"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "When pickups_automatically_scheduled = NO"
+        }
+      }
+    },
+    "/cancel-order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "cancel order",
+        "description": "cancel order",
+        "operationId": "cancelOrder",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "cancel order Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order ID",
+                    "format": "string",
+                    "default": "test123"
+                  },
+                  "awb_number": {
+                    "description": "Awb Number",
+                    "format": "string",
+                    "default": "38389839839839"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "order_id": "test123",
+                      "refrence_id": "test123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "Cancel before courier pickup"
+        ],
+        "x-errors": [
+          "ORDER_NOT_FOUND",
+          "CANCEL_NOT_ALLOWED"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "order_id + awb_number required"
+        }
+      }
+    },
+    "/auto-assign-order": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Auto Assign Order",
+        "description": "Auto Assign Order",
+        "operationId": "autoCourierAssign",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Auto Assign Order Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order ID",
+                    "format": "string",
+                    "default": "test123"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "order_id": "test123",
+                      "refrence_id": "test123",
+                      "awb_number": "123123123",
+                      "courier_company": "Delhivery",
+                      "courier_company_service": "Delhivery"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "x-useCases": [
+          "One-shot assign when panel auto-assign is configured"
+        ],
+        "x-errors": [
+          "AUTO_ASSIGN_NOT_CONFIGURED",
+          "ORDER_NOT_FOUND"
+        ],
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Requires panel auto-assign enabled"
+        }
+      }
+    },
+    "/generate-manifest": {
+      "get": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "Generate Manifest",
+        "description": "Generate Manifest",
+        "operationId": "generateManifest",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awb_numbers",
+            "in": "query",
+            "description": "AWB Number (comma separated, max: 25)",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Max 25 AWB numbers per request (comma-separated)"
+        }
+      }
+    },
+    "/get-ndr-all": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get Ndr Orders",
+        "description": "Get Ndr Orders",
+        "operationId": "getAllNdrShipments",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "From Date, Format: dd-mm-yyyy, default: 2 months",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "To Date, Format: dd-mm-yyyy, default: 2 months",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Records per page, max:100, default:25",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Paginated; per_page max 100"
+        }
+      }
+    },
+    "/ndr-action/{awb_number}": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "NDR Action",
+        "description": "NDR Action",
+        "operationId": "ndrOrderAction",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "awb_number",
+            "in": "path",
+            "description": "AWB Number",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "description": "Action, in: REATTEMPT, RETURN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "NDR reattempt / RTO actions"
+        }
+      }
+    },
+    "/get-order-detail/{order_id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Get Order Detail",
+        "description": "Get Order Detail",
+        "operationId": "getOrderDetail",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_id",
+            "in": "path",
+            "description": "Order ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Order status snapshot"
+        }
+      }
+    },
+    "/rate-calculator": {
+      "post": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "Rate Calculator",
+        "description": "Rate Calculator",
+        "operationId": "rateCalculator",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Rate Calculator Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order Id",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "pickup_pincode": {
+                    "description": "Pickup Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "delivery_pincode": {
+                    "description": "Delivery Pincode",
+                    "format": "string",
+                    "default": "110001"
+                  },
+                  "payment_type": {
+                    "description": "Payment Type (PREPAID/COD)",
+                    "format": "string",
+                    "default": "PREPAID"
+                  },
+                  "shipment_type": {
+                    "description": "Shipment Type (FORWARD/RETURN)",
+                    "format": "string",
+                    "default": "FORWARD"
+                  },
+                  "order_amount": {
+                    "description": "Order Amount",
+                    "format": "string",
+                    "default": "1000"
+                  },
+                  "type_of_package": {
+                    "description": "Type Of Package (SPS/MPS/B2B)",
+                    "format": "string",
+                    "default": "SPS"
+                  },
+                  "rov_type": {
+                    "description": "Rov type (ROV_OWNER/ROV_CARRIER)",
+                    "format": "string",
+                    "default": "ROV_OWNER"
+                  },
+                  "cod_amount": {
+                    "description": "COD Amount",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "weight": {
+                    "description": "Weight (in GRAM)",
+                    "format": "string",
+                    "default": "500"
+                  },
+                  "dimensions": {
+                    "description": "dimensions Details",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "no_of_box": {
+                          "type": "number"
+                        },
+                        "length": {
+                          "type": "number"
+                        },
+                        "width": {
+                          "type": "number"
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "no_of_box": "1",
+                        "length": "22",
+                        "width": "10",
+                        "height": "10"
+                      }
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Rate shopping; shares 500 pool with all APIs"
+        }
+      }
+    },
+    "/international-rate-calculator": {
+      "post": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "International Rate Calculator",
+        "description": "Internatinal Rate Calculator",
+        "operationId": "internationalRateCalculator",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Rate Calculator Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "pickup_pincode": {
+                    "description": "Pickup Pincode",
+                    "format": "string",
+                    "default": "122001"
+                  },
+                  "delivery_pincode": {
+                    "description": "Delivery Pincode",
+                    "format": "string",
+                    "default": "110001"
+                  },
+                  "delivery_country_id": {
+                    "description": "Delivery country id",
+                    "format": "string",
+                    "default": "2"
+                  },
+                  "order_amount": {
+                    "description": "Order Amount",
+                    "format": "string",
+                    "default": "1000"
+                  },
+                  "type_of_package": {
+                    "description": "Type Of Package (SPS/MPS/B2B)",
+                    "format": "string",
+                    "default": "SPS"
+                  },
+                  "shipment_purpose": {
+                    "description": "Rov type ('DCSB4','SCSB4','CSB5')",
+                    "format": "string",
+                    "default": "SCSB4"
+                  },
+                  "weight": {
+                    "description": "Weight (in GRAM)",
+                    "format": "string",
+                    "default": "500"
+                  },
+                  "dimensions": {
+                    "description": "dimensions Details",
+                    "type": "array",
+                    "items": {
+                      "properties": {
+                        "no_of_box": {
+                          "type": "number"
+                        },
+                        "length": {
+                          "type": "number"
+                        },
+                        "width": {
+                          "type": "number"
+                        },
+                        "height": {
+                          "type": "number"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "example": [
+                      {
+                        "no_of_box": "1",
+                        "length": "22",
+                        "width": "10",
+                        "height": "10"
+                      }
+                    ]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "International rate quotes"
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Utility"
+        ],
+        "summary": "Login & obtain API keys",
+        "description": "Login",
+        "operationId": "Login",
+        "requestBody": {
+          "description": "User Login Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "description": "Email Or phone number",
+                    "format": "string",
+                    "default": ""
+                  },
+                  "password": {
+                    "description": "password",
+                    "format": "string",
+                    "default": ""
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [],
+        "x-useCases": [
+          "Bootstrap integration — fetch public_key and private_key",
+          "Rotate keys after password change"
+        ],
+        "x-errors": [
+          "AUTH_LOGIN_FAILED"
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Cache keys after success; do not poll login"
+        }
+      }
+    },
+    "/get-warehouses": {
+      "get": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Get Warehouses",
+        "description": "Get all Warehouses",
+        "operationId": "getWarehouses",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "If you have more than 25 records, pass page number (For next 25 records)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Optional ?page= for >25 warehouses"
+        }
+      }
+    },
+    "/create-warehouse": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "create Warehouse",
+        "description": "create Warehouse",
+        "operationId": "createWarehouse",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Create Warehouse Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "address_title": {
+                    "description": "Address Title",
+                    "format": "string",
+                    "default": "test123"
+                  },
+                  "name": {
+                    "description": "Name",
+                    "format": "string",
+                    "default": "Rahul"
+                  },
+                  "phone": {
+                    "description": "Phone",
+                    "format": "string",
+                    "default": "9876543210"
+                  },
+                  "alternate_phone": {
+                    "description": "Alternate Phone",
+                    "format": "string",
+                    "default": "9876543210"
+                  },
+                  "email": {
+                    "description": "Email",
+                    "format": "string",
+                    "default": "test@gmail.com"
+                  },
+                  "address_line_one": {
+                    "description": "Address Line One",
+                    "format": "string",
+                    "default": "delhi railway station"
+                  },
+                  "address_line_two": {
+                    "description": "Address Line Two",
+                    "format": "string",
+                    "default": "new delhi"
+                  },
+                  "pin_code": {
+                    "description": "Pincode",
+                    "format": "string",
+                    "default": "141211"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "warehouse_id": "12345"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Unique address_title"
+        }
+      }
+    },
+    "/order/update-warehouse": {
+      "post": {
+        "tags": [
+          "Warehouse"
+        ],
+        "summary": "Order Update Warehouse",
+        "description": "Order Update Warehouse",
+        "operationId": "orderUpdateWarehouse",
+        "parameters": [
+          {
+            "name": "public-key",
+            "in": "header",
+            "description": "Api Public Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "private-key",
+            "in": "header",
+            "description": "Api Private Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Order Update Warehouse Required Parameters",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "order_id": {
+                    "description": "Order ID",
+                    "format": "string",
+                    "default": "test123"
+                  },
+                  "warehouse_id": {
+                    "description": "Warehouse ID",
+                    "format": "string",
+                    "default": "1"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "result": "1",
+                    "message": "Success",
+                    "data": {
+                      "order_id": "test123",
+                      "refrence_id": "test123"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [
+          {
+            "ApiKeyPublic": []
+          },
+          {
+            "ApiKeyPrivate": []
+          }
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "Change warehouse on existing order"
+        }
+      }
+    },
+    "/info": {
+      "get": {
+        "tags": [
+          "Common"
+        ],
+        "summary": "API health / version",
+        "description": "Get Api Version Detail",
+        "operationId": "getApiInfo",
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          }
+        },
+        "security": [],
+        "x-useCases": [
+          "Health check before batch jobs",
+          "Verify connectivity from new server"
+        ],
+        "x-rateLimit": {
+          "limit": 500,
+          "remainingHeader": "x-ratelimit-remaining",
+          "limitHeader": "x-ratelimit-limit",
+          "window": "1 minute",
+          "windowSeconds": 60,
+          "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+          "sharedQuota": true,
+          "notes": "No API keys; still returns rate-limit headers"
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Common",
+      "description": "Common API Endpoints"
+    },
+    {
+      "name": "Orders",
+      "description": "API Endpoints of Orders"
+    },
+    {
+      "name": "Utility",
+      "description": "API Endpoints of Shipment Utilities"
+    },
+    {
+      "name": "Track",
+      "description": "Track"
+    },
+    {
+      "name": "Label",
+      "description": "Label"
+    },
+    {
+      "name": "Warehouse",
+      "description": "Warehouse"
+    }
+  ],
+  "externalDocs": {
+    "description": "Download Pdf",
+    "url": "https://webparex.in/public/sample-file/api-documentation.pdf"
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyPublic": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "public-key",
+        "description": "API public key from panel profile or POST /login"
+      },
+      "ApiKeyPrivate": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "private-key",
+        "description": "API private key — keep server-side only"
+      }
+    },
+    "schemas": {
+      "ShipmozoResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "description": "1 = success, 0 = failure"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Panel username (email or phone)"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      }
+    },
+    "responses": {
+      "ShipmozoUnauthorized": {
+        "description": "Invalid or missing API keys",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ShipmozoResponse"
+            },
+            "example": {
+              "result": "0",
+              "message": "Invalid API credentials",
+              "data": {}
+            }
+          }
+        }
+      },
+      "ShipmozoValidationError": {
+        "description": "Validation failed",
+        "content": {
+          "application/json": {
+            "example": {
+              "result": "0",
+              "message": "Validation error",
+              "data": {
+                "error": "order_id is required"
+              }
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Too many requests",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Seconds to wait before retry"
+          }
+        },
+        "content": {
+          "application/json": {
+            "example": {
+              "result": "0",
+              "message": "Rate limit exceeded",
+              "data": {}
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyPublic": []
+    },
+    {
+      "ApiKeyPrivate": []
+    }
+  ],
+  "x-portal": {
+    "rateLimitHeaders": {
+      "title": "Response headers (from live API / Swagger)",
+      "description": "Shipmozo documents rate limits via response headers, not only in PDF copy. Read these on every call:",
+      "headers": [
+        {
+          "name": "x-ratelimit-limit",
+          "example": "500",
+          "meaning": "Max requests allowed in the current 1-minute window for your API key"
+        },
+        {
+          "name": "x-ratelimit-remaining",
+          "example": "(live value)",
+          "meaning": "Requests left in the current window — decreases by 1 on each API call you make. You only see a new number on the next HTTP response (the page does not auto-update). After ~60s without traffic, the next call usually shows remaining closer to 500 again (sliding window)."
+        }
+      ],
+      "note": "498 in tutorials means '2 calls used this minute' — not a fixed cap. Use the portal 'Check live rate limit' or Execute API to read current headers."
+    },
+    "errorCodes": [
+      {
+        "code": "PROFILE_UNDER_VERIFICATION",
+        "result": "0",
+        "typicalMessage": "Your profile is under verification",
+        "when": "Seller KYC not completed or pending approval on Shipmozo panel",
+        "action": "Finish verification in Shipmozo panel — keys are valid; APIs stay blocked until account is approved"
+      },
+      {
+        "code": "AUTH_INVALID",
+        "result": "0",
+        "typicalMessage": "Invalid API credentials",
+        "when": "Wrong or missing public-key / private-key",
+        "action": "Re-login via POST /login or verify panel keys"
+      },
+      {
+        "code": "AUTH_LOGIN_FAILED",
+        "result": "0",
+        "typicalMessage": "Invalid username or password",
+        "when": "POST /login with bad credentials",
+        "action": "Check panel username/password"
+      },
+      {
+        "code": "ORDER_NOT_FOUND",
+        "result": "0",
+        "typicalMessage": "Order not found",
+        "when": "order_id unknown for assign, schedule, cancel, get-detail",
+        "action": "Push order first; use same order_id as on your store"
+      },
+      {
+        "code": "ORDER_ALREADY_EXISTS",
+        "result": "0",
+        "typicalMessage": "Order already exists",
+        "when": "Duplicate order_id on push-order",
+        "action": "Use unique order_id or fetch existing via get-order-detail"
+      },
+      {
+        "code": "WAREHOUSE_REQUIRED",
+        "result": "0",
+        "typicalMessage": "warehouse_id is required",
+        "when": "push-order without valid warehouse_id",
+        "action": "Call get-warehouses or create-warehouse"
+      },
+      {
+        "code": "PINCODE_NOT_SERVICEABLE",
+        "result": "0",
+        "typicalMessage": "Not serviceable",
+        "when": "pincode-serviceability returns serviceable: false",
+        "action": "Choose different courier or pincode pair"
+      },
+      {
+        "code": "COURIER_ASSIGN_FAILED",
+        "result": "0",
+        "typicalMessage": "Courier assignment failed",
+        "when": "Invalid courier_id or order state",
+        "action": "Run rate-calculator; use returned courier_id"
+      },
+      {
+        "code": "AUTO_ASSIGN_NOT_CONFIGURED",
+        "result": "0",
+        "typicalMessage": "please setup auto assign",
+        "when": "auto-assign-order without panel Settings > Auto assign",
+        "action": "Enable auto-assign in Shipmozo panel or use assign-courier"
+      },
+      {
+        "code": "PICKUP_ALREADY_SCHEDULED",
+        "result": "0",
+        "typicalMessage": "Pickup already scheduled",
+        "when": "schedule-pickup when pickups_automatically_scheduled = YES",
+        "action": "Skip schedule-pickup; AWB already generated"
+      },
+      {
+        "code": "CANCEL_NOT_ALLOWED",
+        "result": "0",
+        "typicalMessage": "Cannot cancel order",
+        "when": "Shipment picked up or delivered",
+        "action": "Check order status via track-order"
+      },
+      {
+        "code": "AWB_NOT_FOUND",
+        "result": "0",
+        "typicalMessage": "AWB not found",
+        "when": "track-order / get-order-label with invalid awb_number",
+        "action": "Use awb_number from assign-courier or auto-assign response"
+      },
+      {
+        "code": "VALIDATION_ERROR",
+        "result": "0",
+        "typicalMessage": "Validation error",
+        "when": "Missing required JSON fields",
+        "action": "Fix request body per parameter table"
+      },
+      {
+        "code": "RATE_LIMIT",
+        "result": "0",
+        "typicalMessage": "Rate limit exceeded",
+        "when": "x-ratelimit-remaining hits 0 within the 1-minute window or HTTP 429",
+        "action": "Pause calls; retry after ~60s when remaining rises again"
+      },
+      {
+        "code": "CORS_TRAILING_SLASH",
+        "result": "—",
+        "typicalMessage": "Browser CORS error",
+        "when": "Base URL ends with /",
+        "action": "Use https://shipping-api.com/app/api/v1 without trailing slash"
+      }
+    ],
+    "workflows": [
+      {
+        "id": "forward-standard",
+        "title": "Forward shipment (manual courier)",
+        "steps": [
+          "POST /login — store public-key & private-key",
+          "GET /get-warehouses — pick warehouse_id",
+          "POST /pincode-serviceability — verify route",
+          "POST /rate-calculator — choose courier_id",
+          "POST /push-order — create order in panel",
+          "POST /assign-courier — assign courier & get AWB",
+          "If pickups_automatically_scheduled = NO → POST /schedule-pickup",
+          "GET /get-order-label/{awb_number} — shipping label",
+          "GET /track-order?awb_number=… — tracking"
+        ]
+      },
+      {
+        "id": "forward-auto",
+        "title": "Forward shipment (auto-assign)",
+        "steps": [
+          "Configure Settings → Auto assign in Shipmozo panel",
+          "POST /push-order",
+          "POST /auto-assign-order — AWB + courier in one call",
+          "GET /track-order / get-order-label as needed"
+        ]
+      },
+      {
+        "id": "return",
+        "title": "Return order",
+        "steps": [
+          "GET /get-return-reason — pick return_reason_id",
+          "POST /push-return-order",
+          "POST /assign-courier or /auto-assign-order",
+          "GET /track-order"
+        ]
+      },
+      {
+        "id": "cancel",
+        "title": "Cancel before pickup",
+        "steps": [
+          "POST /cancel-order with order_id + awb_number",
+          "Confirm result = 1"
+        ]
+      },
+      {
+        "id": "ndr",
+        "title": "NDR handling",
+        "steps": [
+          "GET /get-ndr-all — list non-delivery reports",
+          "POST /ndr-action/{awb_number} — reattempt / RTO / etc."
+        ]
+      }
+    ],
+    "glossary": [
+      {
+        "term": "order_id",
+        "meaning": "Your store's unique order ID; must match across push, assign, and cancel"
+      },
+      {
+        "term": "reference_id",
+        "meaning": "Shipmozo reference (often same as order_id)"
+      },
+      {
+        "term": "awb_number",
+        "meaning": "Air Waybill tracking number from courier"
+      },
+      {
+        "term": "warehouse_id",
+        "meaning": "Pickup location ID from get-warehouses / create-warehouse"
+      },
+      {
+        "term": "courier_id",
+        "meaning": "Numeric ID from rate-calculator response"
+      },
+      {
+        "term": "pickups_automatically_scheduled",
+        "meaning": "YES = skip schedule-pickup; NO = call schedule-pickup after assign"
+      },
+      {
+        "term": "NDR",
+        "meaning": "Non-Delivery Report — failed delivery attempt"
+      }
+    ],
+    "rateLimitGlobal": {
+      "limit": 500,
+      "window": "1 minute",
+      "windowSeconds": 60,
+      "windowBehavior": "x-ratelimit-remaining only changes when Shipmozo sends a new HTTP response to you — it does not tick down on its own in the browser. Each API call lowers remaining by 1. After ~60 seconds, the next call you make usually shows remaining closer to 500 again (sliding window, not a live clock on the docs page).",
+      "responseHeaders": {
+        "limit": "x-ratelimit-limit",
+        "remaining": "x-ratelimit-remaining"
+      },
+      "whenExceeded": "HTTP 429 and/or result=0 with rate-limit message — wait until remaining rises again (typically within ~1 minute)",
+      "source": "Observed on shipping-api.com production (Cloudflare); limit=500, remaining decrements per call and refills each minute"
+    },
+    "rateLimitsByEndpoint": [
+      {
+        "operationId": "getApiInfo",
+        "method": "GET",
+        "path": "/info",
+        "tag": "Common",
+        "auth": false,
+        "limit": 500,
+        "notes": "No API keys; still returns rate-limit headers"
+      },
+      {
+        "operationId": "generateManifest",
+        "method": "GET",
+        "path": "/generate-manifest",
+        "tag": "Label",
+        "auth": true,
+        "limit": 500,
+        "notes": "Max 25 AWB numbers per request (comma-separated)"
+      },
+      {
+        "operationId": "getOrderLabel",
+        "method": "GET",
+        "path": "/get-order-label/{awb_number}",
+        "tag": "Label",
+        "auth": true,
+        "limit": 500,
+        "notes": "Returns base64 label PNG"
+      },
+      {
+        "operationId": "assignCourier",
+        "method": "POST",
+        "path": "/assign-courier",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Manual courier from rate-calculator"
+      },
+      {
+        "operationId": "autoCourierAssign",
+        "method": "POST",
+        "path": "/auto-assign-order",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Requires panel auto-assign enabled"
+      },
+      {
+        "operationId": "cancelOrder",
+        "method": "POST",
+        "path": "/cancel-order",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "order_id + awb_number required"
+      },
+      {
+        "operationId": "getAllNdrShipments",
+        "method": "GET",
+        "path": "/get-ndr-all",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Paginated; per_page max 100"
+      },
+      {
+        "operationId": "getOrderDetail",
+        "method": "GET",
+        "path": "/get-order-detail/{order_id}",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Order status snapshot"
+      },
+      {
+        "operationId": "internationalPushOrder",
+        "method": "POST",
+        "path": "/international-push-order",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "International forward order"
+      },
+      {
+        "operationId": "ndrOrderAction",
+        "method": "POST",
+        "path": "/ndr-action/{awb_number}",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "NDR reattempt / RTO actions"
+      },
+      {
+        "operationId": "pushOrders",
+        "method": "POST",
+        "path": "/push-order",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Create forward order"
+      },
+      {
+        "operationId": "pushReturnOrder",
+        "method": "POST",
+        "path": "/push-return-order",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "Return / reverse pickup order"
+      },
+      {
+        "operationId": "schedulePickup",
+        "method": "POST",
+        "path": "/schedule-pickup",
+        "tag": "Orders",
+        "auth": true,
+        "limit": 500,
+        "notes": "When pickups_automatically_scheduled = NO"
+      },
+      {
+        "operationId": "trackOrder",
+        "method": "GET",
+        "path": "/track-order",
+        "tag": "Track",
+        "auth": true,
+        "limit": 500,
+        "notes": "Query param awb_number; prefer webhooks over tight polling"
+      },
+      {
+        "operationId": "Countries",
+        "method": "GET",
+        "path": "/countries",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "International orders reference data"
+      },
+      {
+        "operationId": "createShipper",
+        "method": "POST",
+        "path": "/create-shipper",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "Shipper profile setup"
+      },
+      {
+        "operationId": "getReturnReason",
+        "method": "GET",
+        "path": "/get-return-reason",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "Before push-return-order"
+      },
+      {
+        "operationId": "internationalRateCalculator",
+        "method": "POST",
+        "path": "/international-rate-calculator",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "International rate quotes"
+      },
+      {
+        "operationId": "Login",
+        "method": "POST",
+        "path": "/login",
+        "tag": "Utility",
+        "auth": false,
+        "limit": 500,
+        "notes": "Cache keys after success; do not poll login"
+      },
+      {
+        "operationId": "pincodeServiceability",
+        "method": "POST",
+        "path": "/pincode-serviceability",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "Checkout / pre-push validation"
+      },
+      {
+        "operationId": "rateCalculator",
+        "method": "POST",
+        "path": "/rate-calculator",
+        "tag": "Utility",
+        "auth": true,
+        "limit": 500,
+        "notes": "Rate shopping; shares 500 pool with all APIs"
+      },
+      {
+        "operationId": "createWarehouse",
+        "method": "POST",
+        "path": "/create-warehouse",
+        "tag": "Warehouse",
+        "auth": true,
+        "limit": 500,
+        "notes": "Unique address_title"
+      },
+      {
+        "operationId": "getWarehouses",
+        "method": "GET",
+        "path": "/get-warehouses",
+        "tag": "Warehouse",
+        "auth": true,
+        "limit": 500,
+        "notes": "Optional ?page= for >25 warehouses"
+      },
+      {
+        "operationId": "orderUpdateWarehouse",
+        "method": "POST",
+        "path": "/order/update-warehouse",
+        "tag": "Warehouse",
+        "auth": true,
+        "limit": 500,
+        "notes": "Change warehouse on existing order"
+      }
+    ],
+    "rateLimits": {
+      "default": {
+        "limit": 500,
+        "window": "1 minute",
+        "source": "x-ratelimit-limit"
+      }
+    }
+  }
+}

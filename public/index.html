@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shipmozo API — Developer Portal</title>
+  <link rel="icon" href="/assets/shipmozo-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/assets/shipmozo-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/portal.css?v=10" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#/" class="brand">
+        <img src="/assets/shipmozo-logo.png" alt="Shipmozo" class="brand-logo" width="120" height="40" />
+        <span class="brand-text"><span class="brand-sub">API Docs</span></span>
+      </a>
+      <nav class="topnav" aria-label="Main">
+        <a href="#/" class="topnav-link" data-nav="docs">Docs</a>
+        <a href="#/workflows" class="topnav-link" data-nav="workflows">Flows</a>
+        <a href="#/rate-limits" class="topnav-link" data-nav="errors">Rate limits</a>
+        <a href="#/errors" class="topnav-link" data-nav="errors">Errors</a>
+        <a href="#/execute" class="topnav-link" data-nav="execute">API Tester</a>
+      </nav>
+      <div class="topbar-actions">
+        <button type="button" class="btn-ghost btn-sm" id="openAuthBtn">Connect API</button>
+        <span class="auth-status" id="authStatus">Not connected</span>
+      </div>
+    </div>
+  </header>
+
+  <dialog class="auth-dialog" id="authDialog">
+    <div class="auth-dialog-inner">
+      <button type="button" class="dialog-close" id="closeAuthBtn" aria-label="Close">&times;</button>
+      <h2>API credentials</h2>
+      <p class="auth-hint">Keys are stored in your browser only and sent via the local proxy to Shipmozo.</p>
+
+      <label for="authUsername">Panel username</label>
+      <input type="text" id="authUsername" placeholder="Email or phone" autocomplete="username" />
+
+      <label for="authPassword">Password</label>
+      <input type="password" id="authPassword" placeholder="Panel password" autocomplete="current-password" />
+      <button type="button" class="btn-primary btn-block" id="authLoginBtn">Sign in &amp; fetch keys</button>
+      <p class="auth-login-msg" id="authLoginMsg" role="status"></p>
+
+      <hr class="auth-divider" />
+      <p class="auth-hint">Or paste keys from <strong>Panel → Profile</strong></p>
+      <label for="authPublicKey">public-key</label>
+      <input type="text" id="authPublicKey" placeholder="Your public key" spellcheck="false" />
+      <label for="authPrivateKey">private-key</label>
+      <input type="password" id="authPrivateKey" placeholder="Your private key" spellcheck="false" />
+      <div class="auth-dialog-actions">
+        <button type="button" class="btn-primary" id="authSaveKeysBtn">Save keys</button>
+        <button type="button" class="btn-secondary" id="authClearBtn">Disconnect</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-search">
+        <input type="search" id="searchInput" placeholder="Search endpoints…" autocomplete="off" />
+      </div>
+      <nav class="sidebar-nav" id="sidebarNav" aria-label="API reference"></nav>
+    </aside>
+    <main class="main" id="main">
+      <div class="loading" id="loading">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Loading API documentation…</p>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-host" id="toastHost" aria-live="polite"></div>
+
+  <script src="/assets/portal.js?v=10" type="module"></script>
+</body>
+</html>
