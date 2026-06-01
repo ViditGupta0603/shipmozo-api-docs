@@ -1,6 +1,6 @@
 /** Shipmozo API portal enrichment — flows, errors, rate limits, use cases */
 
-export const API_BASE = "https://shipping-api.com/app/api/v1";
+export const API_BASE = "https://appiify.com/app/api/v1";
 
 export const GLOBAL = {
   rateLimits: [
@@ -36,7 +36,7 @@ export const GLOBAL = {
     { code: "PICKUP_AUTO_SCHEDULED", http: "200", meaning: "Manual schedule-pickup not needed", action: "Skip schedule-pickup when rate-calculator returns pickups_automatically_scheduled=YES" },
     { code: "PINCODE_NOT_SERVICEABLE", http: "200", meaning: "Lane not serviceable", action: "Call pincode-serviceability before push-order" },
     { code: "WAREHOUSE_REQUIRED", http: "200", meaning: "Invalid/missing warehouse_id", action: "create-warehouse or get-warehouses" },
-    { code: "CORS_TRAILING_SLASH", http: "—", meaning: "Base URL has trailing /", action: "Use https://shipping-api.com/app/api/v1 without trailing slash" },
+    { code: "CORS_TRAILING_SLASH", http: "—", meaning: "Base URL has trailing /", action: "Use https://appiify.com/app/api/v1 without trailing slash" },
     { code: "RATE_LIMIT", http: "429", meaning: "Too many requests", action: "Exponential backoff; honor Retry-After if present" },
   ],
   workflows: [

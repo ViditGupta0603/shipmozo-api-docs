@@ -1,7 +1,7 @@
 {
   "info": {
     "title": "Shipmozo Shipping API",
-    "description": "REST API for order fulfillment, courier assignment, tracking, warehouses, NDR, and labels. All responses use `result` (`1` = success, `0` = failure), `message`, and `data`.\n\n**Base URL:** `https://shipping-api.com/app/api/v1` — do not add a trailing slash.\n\n**Auth:** Send `public-key` and `private-key` headers on every protected route, or obtain keys via `POST /login`.\n\n**Rate limits:** Shipmozo returns `x-ratelimit-limit` (500) and `x-ratelimit-remaining` on each response. Quota is **500 requests per 1-minute window** per API key; `remaining` drops with each call and **refreshes when the minute rolls over**.\n\n**Support:** munish@apporio.in",
+    "description": "REST API for order fulfillment, courier assignment, tracking, warehouses, NDR, and labels. All responses use `result` (`1` = success, `0` = failure), `message`, and `data`.\n\n**Base URL:** `https://appiify.com/app/api/v1` — do not add a trailing slash.\n\n**Auth:** Send `public-key` and `private-key` headers on every protected route, or obtain keys via `POST /login`.\n\n**Rate limits:** Shipmozo returns `x-ratelimit-limit` (500) and `x-ratelimit-remaining` on each response. Quota is **500 requests per 1-minute window** per API key; `remaining` drops with each call and **refreshes when the minute rolls over**.\n\n**Support:** munish@apporio.in",
     "version": "1.0.0",
     "contact": {
       "name": "Shipmozo API Support",
@@ -98,7 +98,7 @@
       { "code": "AWB_NOT_FOUND", "result": "0", "typicalMessage": "AWB not found", "when": "track-order / get-order-label with invalid awb_number", "action": "Use awb_number from assign-courier or auto-assign response" },
       { "code": "VALIDATION_ERROR", "result": "0", "typicalMessage": "Validation error", "when": "Missing required JSON fields", "action": "Fix request body per parameter table" },
       { "code": "RATE_LIMIT", "result": "0", "typicalMessage": "Rate limit exceeded", "when": "x-ratelimit-remaining hits 0 within the 1-minute window or HTTP 429", "action": "Pause calls; retry after ~60s when remaining rises again" },
-      { "code": "CORS_TRAILING_SLASH", "result": "—", "typicalMessage": "Browser CORS error", "when": "Base URL ends with /", "action": "Use https://shipping-api.com/app/api/v1 without trailing slash" }
+      { "code": "CORS_TRAILING_SLASH", "result": "—", "typicalMessage": "Browser CORS error", "when": "Base URL ends with /", "action": "Use https://appiify.com/app/api/v1 without trailing slash" }
     ],
     "workflows": [
       {

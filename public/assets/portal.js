@@ -1,4 +1,4 @@
-const PRODUCTION_BASE = "https://shipping-api.com/app/api/v1";
+const PRODUCTION_BASE = "https://appiify.com/app/api/v1";
 const AUTH_STORAGE = "shipmozo_api_keys";
 /** Static file works even when a generic static server is used; /api/spec.json needs node server.js */
 const SPEC_URLS = ["/assets/spec.json", "/api/spec.json"];

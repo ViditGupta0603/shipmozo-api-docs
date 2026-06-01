@@ -10,7 +10,7 @@
     },
     "servers": [
         {
-            "url": "https://shipping-api.com/app/api/v1",
+            "url": "https://appiify.com/app/api/v1",
             "description": "Production API Server"
         }
     ],

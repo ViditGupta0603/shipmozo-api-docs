@@ -161,7 +161,7 @@ const spec = {
     description: [
       "REST API for order push, courier assignment, tracking, warehouses, labels, NDR, and returns.",
       "",
-      "**Base URL:** `https://shipping-api.com/app/api/v1` (no trailing slash).",
+      "**Base URL:** `https://appiify.com/app/api/v1` (no trailing slash).",
       "",
       "**Authentication:** Send `public-key` and `private-key` headers on every request except `/login` and `/info`.",
       "",

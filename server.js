@@ -6,7 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
 const publicDir = path.join(__dirname, "public");
-const PRODUCTION_BASE = "https://shipping-api.com/app/api/v1";
+const PRODUCTION_BASE = "https://appiify.com/app/api/v1";
 
 const swaggerDocument = loadMergedSpec(__dirname);
 
