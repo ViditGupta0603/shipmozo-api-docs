@@ -15,11 +15,7 @@ info:
     name: Proprietary
 
 servers:
-  - url: https://api.nexuslogistics.example.com/v1
-    description: Production
-  - url: https://sandbox.api.nexuslogistics.example.com/v1
-    description: Sandbox
-  - url: http://localhost:3000/v1
+  - url: https://shipmozo-api-docs.onrender.com
     description: Local development
 
 tags:
