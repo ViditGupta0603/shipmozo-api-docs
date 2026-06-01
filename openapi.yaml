@@ -15,7 +15,7 @@ info:
     name: Proprietary
 
 servers:
-  - url: https://shipmozo-api-docs.onrender.com
+  - url: http://localhost:3000/v1
     description: Local development
 
 tags:
